@@ -20,23 +20,47 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void _loadHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _history = prefs.getStringList('quiz_history') ?? [];
+      _history = prefs.getStringList('quiz_history')?.reversed.toList() ?? [];
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Історія результатів'),
-        ),
-        body: ListView.builder(
-          itemCount: _history.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text('Спроба ${index + 1}: ${_history[index]}'),
-            );
-          },
-        ));
+      appBar: AppBar(
+        title: const Text('Історія результатів'),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: _history.isEmpty
+          ? const Center(
+              child: Text(
+                'Історія порожня',
+                style: TextStyle(fontSize: 18),
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: _history.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  color: Colors.deepPurple[50],
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.deepPurple,
+                      child: Text(
+                        '${index + 1}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    title: Text(
+                      'Результат: ${_history[index]}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                );
+              },
+            ),
+    );
   }
 }
